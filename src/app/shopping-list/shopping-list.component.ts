@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { Ingredient } from '../shared/ingredient.model';
-import { ShoppingListService } from './shopping-list.service';
 import { LoggingService } from '../logging.service';
 import * as fromShoppingList from './store/shopping-list.reducer';
 import * as ShoppingListAction from './store/shopping-list.actions';
@@ -21,7 +20,6 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   //   new Ingredient('Tomatoes', 10),
   // ];
   constructor(
-    private shoppingListService: ShoppingListService,
     private loggingService: LoggingService,
     //! below the shopping list store is Injected
     // private store: Store <{shoppingList: {ingredients: Ingredient[]}}> // * now we are using type below
@@ -47,7 +45,7 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
     // this.shoppingListService.editIndex.next(index);
     this.store.dispatch( new ShoppingListAction.StartEdit(index))
   }
-  
+
   ngOnDestroy() {
     // this.shoppingListServiceUnsubscribe.unsubscribe();
   }

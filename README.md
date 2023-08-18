@@ -30,7 +30,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 <!--  -->
 
 <!-- 24 Bonus Module -->
-<!-- completed 8th Video  -->
+<!-- completed 16th Video  -->
 
 <!-- NGRX -->
 First command
