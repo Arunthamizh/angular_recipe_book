@@ -5,9 +5,11 @@ import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
+import { StoreModule } from '@ngrx/store'; //* ngrx store
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core.module';
+import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
+import { LoggingService } from './logging.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,10 @@ import { CoreModule } from './core.module';
     SharedModule,
     // AuthModule,
     AppRoutingModule,
-    CoreModule // * provided and service are moved to core module
+    // * setting up the NGRX store in application widely
+    // * action reducer MAP( its a javascript object any identifer of your choise( here is "shoppingList"))
+    StoreModule.forRoot({shoppingList : shoppingListReducer}),
+     CoreModule // * provided and service are moved to core module
   ],
   // // provide maintain one service instance for all the time still app running
   // * below code are moved to app core module
@@ -35,6 +40,7 @@ import { CoreModule } from './core.module';
   //   multi: true // By enable as true we allow to use multiple interceptor even we use one for now
   // }],
   // entryComponents:[AlertComponent], //  ! below angular 9 we need entry componts above to it we can omit it
+  // providers:[LoggingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

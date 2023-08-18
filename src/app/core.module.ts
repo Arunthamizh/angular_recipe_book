@@ -5,6 +5,7 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { AuthService } from './auth/auth.service';
 import { RecipeService } from './recipes/recipe.service';
 import { ShoppingListService } from './shopping-list/shopping-list.service';
+import { LoggingService } from './logging.service';
 // * core module is used to split the servie form the app module
   // * and no need to export it because they are provided into the root
 @NgModule({
@@ -13,6 +14,8 @@ import { ShoppingListService } from './shopping-list/shopping-list.service';
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptorService,
     multi: true // By enable as true we allow to use multiple interceptor even we use one for now
-  }],
+  },
+  // LoggingService
+  ],
 })
 export class CoreModule {}

@@ -5,6 +5,7 @@ import { AlertComponent } from "./alert/alert.component";
 import { DropdownDirective } from "./dropdown.directive";
 import { LoadingSpinner } from "./loading-spinner/loading-spinner.component";
 import { PlaceholderDirective } from "./placeholder/placeholder.directive";
+import { LoggingService } from "../logging.service";
 
 @NgModule({
   declarations:[
@@ -23,7 +24,7 @@ import { PlaceholderDirective } from "./placeholder/placeholder.directive";
     FormsModule
   ],
     entryComponents:[AlertComponent], //  ! below angular 9 we need entry componts above to it we can omit it
-
+  providers: [LoggingService]
 })
 export class SharedModule{
 

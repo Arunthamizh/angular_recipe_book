@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { ShoppingEditComponent } from './shopping-edit/shopping-edit.component';
 import { ShoppingListComponent } from './shopping-list.component';
 import { ShoppingListRoutingModule } from './shopping-list-routing.module';
+import { LoggingService } from '../logging.service';
 
 @NgModule({
   declarations:[
@@ -17,6 +18,7 @@ import { ShoppingListRoutingModule } from './shopping-list-routing.module';
     ShoppingListRoutingModule,
        SharedModule,
   ],
+  // providers:[LoggingService]
 
 })
 export class ShoppingListModule{

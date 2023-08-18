@@ -4,6 +4,9 @@ import { DataStorageService } from '../shared/data-storage-service';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { Recipe } from './recipe.model';
+import { Store } from '@ngrx/store';
+import * as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
+import * as fromShoppingList from '../shopping-list/store/shopping-list.reducer';
 @Injectable()
 export class RecipeService {
     // recipeSelected = new EventEmitter<Recipe>();
@@ -28,8 +31,10 @@ recipeChanged = new Subject<Recipe[]>();
 //       ];
 
     private recipes: Recipe[] =[]
-      constructor( private shoppingListService: ShoppingListService){
-      }
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private store: Store<fromShoppingList.AppState>,
+  ) {}
 
       setRecipes(recipes: Recipe[]){
         this.recipes = [...recipes];
@@ -54,7 +59,8 @@ recipeChanged = new Subject<Recipe[]>();
           return this.recipes.slice()[id];
       }
       addIngredientsToShoppingList(ingredients: Ingredient[]) {
-        this.shoppingListService.addIngredients(ingredients);
+        // this.shoppingListService.addIngredients(ingredients);
+        this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients))
       }
 
       addRecipe(recipe: Recipe) {
