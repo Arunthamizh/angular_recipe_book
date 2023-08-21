@@ -10,6 +10,8 @@ import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core.module';
 import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
 import { LoggingService } from './logging.service';
+import { authReducer } from './auth/store/auth.reducer';
+import * as fromAuth from '../app/store/app.reducer'
 
 @NgModule({
   declarations: [
@@ -29,7 +31,15 @@ import { LoggingService } from './logging.service';
     AppRoutingModule,
     // * setting up the NGRX store in application widely
     // * action reducer MAP( its a javascript object any identifer of your choise( here is "shoppingList"))
-    StoreModule.forRoot({shoppingList : shoppingListReducer}),
+
+    // * below object is actionReducerMap object
+    // StoreModule.forRoot({
+    //   shoppingList: shoppingListReducer,
+    //   auth: authReducer
+    // }),
+
+    //  below is the alternative and efficient way for above code
+     StoreModule.forRoot( fromAuth.appReducer ),
      CoreModule // * provided and service are moved to core module
   ],
   // // provide maintain one service instance for all the time still app running
