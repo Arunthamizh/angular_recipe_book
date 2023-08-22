@@ -7,6 +7,8 @@ export interface AppState {
   auth: fromAuth.state
 }
 
+//*  any action that dispached from the reducer that always reached all other reducers in the store
+
 // Here we are using action reducer map file instead of using it in the appModule
 export const appReducer: ActionReducerMap<AppState> = {
   shoppingList: formShoppingList.shoppingListReducer,

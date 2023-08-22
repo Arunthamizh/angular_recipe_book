@@ -9,6 +9,9 @@ const initialState: state = {
   user: null
 };
 
+// state ==> Doest care about other states,
+// Action ==> Cate about all the redudcer in the store there fore default is very important
+
 export function authReducer(state = initialState, action: AuthActions.AuthActions) {
 
   switch (action.type) {
@@ -34,6 +37,14 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
       }
 
     // case default;
+
+
+
+    //* The defaulat cause is important
+    //* Any action that dispached action from the reducer that always reached all other reducers in the store.
+    // For example the shopping list reducer is called then the auth reducer is trigger
+      // -- it will not true for the swith case mention at that time the default case is used.
+
     default:
 
     return state
