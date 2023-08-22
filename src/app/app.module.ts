@@ -12,6 +12,8 @@ import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer
 import { LoggingService } from './logging.service';
 import { authReducer } from './auth/store/auth.reducer';
 import * as fromAuth from '../app/store/app.reducer'
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './auth/store/auth.effects';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import * as fromAuth from '../app/store/app.reducer'
 
     //  below is the alternative and efficient way for above code
      StoreModule.forRoot( fromAuth.appReducer ),
-     CoreModule // * provided and service are moved to core module
+    //  * need to register the effects below the storeModule
+    EffectsModule.forRoot([AuthEffects]),
+    CoreModule // * provided and service are moved to core module
   ],
   // // provide maintain one service instance for all the time still app running
   // * below code are moved to app core module

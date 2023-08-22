@@ -5,6 +5,9 @@ import { AuthResponseData, AuthService } from './auth.service';
 import { NgForm } from '@angular/forms';
 import { Component, ComponentFactoryResolver, ViewChild } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
+import * as fromApp from '../store/app.reducer';
+import * as  AuthActions  from './store/auth.action';
+import { Store } from '@ngrx/store';
 @Component({
   selector:'app-auth',
   templateUrl:'./auth.component.html'
@@ -23,11 +26,11 @@ export class AuthComponet {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private store: Store<fromApp.AppState>
   ){}
   onSwitchMode(){
     this.isLoginMode = !this.isLoginMode;
-
   }
 
   onSubmit(form:NgForm){
@@ -42,7 +45,15 @@ export class AuthComponet {
 
     this.isLoading = true;
     if(this.isLoginMode){
-      authObs = this.authService.login(email, password)
+
+      // authObs = this.authService.login(email, password)
+
+      // * dispatch will not give an observable
+      this.store.dispatch(
+        new AuthActions.LoginStart({email: email, password: password})
+      )
+
+
       // .subscribe(
       //   (response)=>{
       //     console.log('signup', response);
