@@ -29,7 +29,9 @@ export class AuthService {
   //! Subject - we get the user(data) whenever new data is emitted. but not able to get the value
     // ! that are emitted before
 
-  user = new BehaviorSubject<User>(null);
+  // * Going to use NGRX store insteadof
+  // user = new BehaviorSubject<User>(null);
+
   // ! BehaviorSubject -it gives acccess to the previously emitted value
      //! if they haven`t subscribed at the point of time that value was emitted (user data saved in the past time but we need user.token)
 

@@ -5,12 +5,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Recipe } from '../recipes/recipe.model';
 import { pipe, Subscriber } from 'rxjs';
 import { exhaustMap, map, take, tap } from 'rxjs/operators'
+import * as fromApp from '../store/app.reducer'
+import { Store } from '@ngrx/store';
 
 @Injectable({providedIn: 'root'}) // this is optinal type otherwise you need to include it in app modules providers array
 // above is the recomended way for
 export class DataStorageService {
   constructor(private http: HttpClient, private recipeService: RecipeService,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private store: Store<fromApp.AppState>
+    ) { }
 
   storeRecipes(){
     const recipe = this.recipeService.getRecipes();
@@ -50,7 +54,10 @@ export class DataStorageService {
      //! In exhaustMap method we passed function there we get the data form that previous observable
      //! and now we return a new observable in there which will then replace our previous observable in that entire observable chain
 
-    return this.authService.user.pipe((take(1), exhaustMap(user => {
+    // return this.authService.user.pipe((take(1), exhaustMap(user => {
+      return this.store.select('auth').pipe(
+        map(authState =>  authState.user),
+        (take(1), exhaustMap(user => {
       return this.http.get<Recipe[]>('https://recipe-angular-udemy-course-default-rtdb.firebaseio.com/recipes.json',
       {
         params: new HttpParams().set('auth', user._token)

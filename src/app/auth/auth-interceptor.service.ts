@@ -2,17 +2,22 @@ import { AuthService } from './auth.service';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpParams, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { take, exhaustMap } from 'rxjs/operators';
+import { take, exhaustMap, map } from 'rxjs/operators';
+import * as fromApp from '../store/app.reducer'
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class  AuthInterceptorService implements HttpInterceptor{
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private store: Store<fromApp.AppState>
   ){}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): any {
-    return this.authService.user.pipe(take(1), exhaustMap(( user =>{
+    return this.store.select('auth').pipe(take(1),
+    map( authState => { return authState.user } ),
+    exhaustMap(( user =>{
       // ! if user not return the request (during login user not available if try to get user._token we get error)
       if(!user){
         return next.handle(req);
