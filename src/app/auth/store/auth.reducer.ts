@@ -50,6 +50,10 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
       isLoading: true
     };
 
+    case AuthActions.AUTO_LOGIN:
+      return{
+        ...state
+      }
     case AuthActions.AUTHENTICATE_FAIL:
       return{
         ...state,
