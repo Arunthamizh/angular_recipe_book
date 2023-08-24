@@ -3,7 +3,7 @@ import { AlertComponent } from './../shared/alert/alert.component';
 import { Router } from '@angular/router';
 import { AuthResponseData, AuthService } from './auth.service';
 import { NgForm } from '@angular/forms';
-import { Component, ComponentFactoryResolver, ViewChild } from "@angular/core";
+import { Component, ComponentFactoryResolver, OnInit, ViewChild } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
 import * as fromApp from '../store/app.reducer';
 import * as  AuthActions  from './store/auth.action';
@@ -13,13 +13,13 @@ import { Store } from '@ngrx/store';
   templateUrl:'./auth.component.html'
 })
 
-export class AuthComponet {
+export class AuthComponet implements OnInit {
   isLoginMode = true;
   isLoading = false;
   error: string = null;
 
   closeSub: Subscription
-
+  private storeSub: Subscription
    // !  it find where we use that directive in the template of this component
    @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective
 
@@ -29,6 +29,17 @@ export class AuthComponet {
     private componentFactoryResolver: ComponentFactoryResolver,
     private store: Store<fromApp.AppState>
   ){}
+
+  ngOnInit(): void {
+   this.storeSub =  this.store.select('auth').subscribe((authState) => {
+      this.isLoading = authState.isLoading;
+      this.error = authState.authError;
+      if(this.error){
+        this.showErrorAlert(this.error)
+      }
+    })
+  }
+
   onSwitchMode(){
     this.isLoginMode = !this.isLoginMode;
   }
@@ -41,9 +52,9 @@ export class AuthComponet {
 
     const email = form.value.email;
     const password = form.value.password;
-    let authObs: Observable<AuthResponseData>;
+    // let authObs: Observable<AuthResponseData>;
 
-    this.isLoading = true;
+    // this.isLoading = true;
     if(this.isLoginMode){
 
       // authObs = this.authService.login(email, password)
@@ -66,7 +77,12 @@ export class AuthComponet {
       //     this.error = err;
       //   })
     }else {
-      authObs = this.authService.signup(email, password)
+      // authObs = this.authService.signup(email, password)
+
+      this.store.dispatch(
+        new AuthActions.SignupStart({email: email, password: password})
+      )
+
       // .subscribe(
       //   (response)=>{
       //     console.log('signup', response);
@@ -86,28 +102,30 @@ export class AuthComponet {
       //     this.error = err;
       //   })
     }
-    authObs.subscribe(
-      (response)=>{
-        if(!response){
-          return ;
-        }
-        console.log('signup', response);
-        this.isLoading = false;
-        this.router.navigate(['/recipes'])
 
-      },
-      (errorMessage)=>{
-        console.log('signup err', errorMessage);
-        this.showErrorAlert(errorMessage)
-        this.isLoading = false;
-        this.error = errorMessage;
-      })
+
+    // authObs.subscribe(
+    //   (response)=>{
+    //     if(!response){
+    //       return ;
+    //     }
+    //     console.log('signup', response);
+    //     this.isLoading = false;
+    //     this.router.navigate(['/recipes'])
+
+    //   },
+    //   (errorMessage)=>{
+    //     console.log('signup err', errorMessage);
+    //     this.showErrorAlert(errorMessage)
+    //     this.isLoading = false;
+    //     this.error = errorMessage;
+    //   })
     form.reset();
 
   }
 
   onHandleError(){
-    this.error = null
+    this.store.dispatch(new AuthActions.ClearError())
   }
 
   private showErrorAlert(errorMessage: string){
@@ -138,7 +156,9 @@ export class AuthComponet {
     if(this.closeSub){
       this.closeSub.unsubscribe();
     }
-
+    if(this.storeSub){
+      this.storeSub.unsubscribe();
+    }
   }
 
 }

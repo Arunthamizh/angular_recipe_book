@@ -44,55 +44,55 @@ export class AuthService {
   ){
 
   }
-  signup(email: String, password: String){
-    return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDiiQ7oYIODm2yzWJxKA3HUDkLfNw-lgQ8',
-    {
-      email,
-      password,
-      returnSecureToken: true
-     })
-     .pipe(catchError(this.handleError),
-     tap(res  =>{
-      this.handleAuthentication(
-        res.email,
-        res.localId,
-        res.idToken,
-        +res.expiresIn)
-     })
-     )
-    //  .pipe(catchError((err) => {
-    //   let  errorMessage = 'An error occurred';
-    //   if(!err.error || !err.error.error){
-    //     return throwError(errorMessage)
-    //   }
-    //   switch(err.error.error.message){
-    //     case 'EMAIL_EXISTS':
-    //       errorMessage = 'This email exists already';
-    //       break;
-    //     case 'Default':
-    //       errorMessage = 'An new error!!'
-    //       break
-    //   };
-    //   return throwError(errorMessage)
-    //  }))
-  }
+  // signup(email: String, password: String){
+  //   return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDiiQ7oYIODm2yzWJxKA3HUDkLfNw-lgQ8',
+  //   {
+  //     email,
+  //     password,
+  //     returnSecureToken: true
+  //    })
+  //    .pipe(catchError(this.handleError),
+  //    tap(res  =>{
+  //     this.handleAuthentication(
+  //       res.email,
+  //       res.localId,
+  //       res.idToken,
+  //       +res.expiresIn)
+  //    })
+  //    )
+  //   //  .pipe(catchError((err) => {
+  //   //   let  errorMessage = 'An error occurred';
+  //   //   if(!err.error || !err.error.error){
+  //   //     return throwError(errorMessage)
+  //   //   }
+  //   //   switch(err.error.error.message){
+  //   //     case 'EMAIL_EXISTS':
+  //   //       errorMessage = 'This email exists already';
+  //   //       break;
+  //   //     case 'Default':
+  //   //       errorMessage = 'An new error!!'
+  //   //       break
+  //   //   };
+  //   //   return throwError(errorMessage)
+  //   //  }))
+  // }
 
-  login(email: String, password: String){
-     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDiiQ7oYIODm2yzWJxKA3HUDkLfNw-lgQ8',
-     {
-      email,
-      password,
-      returnSecureToken: true
-     })
-     .pipe(catchError(this.handleError),
-     tap(res  =>{
-      this.handleAuthentication(
-        res.email,
-        res.localId,
-        res.idToken,
-        +res.expiresIn)
-     }))
-  }
+  // login(email: String, password: String){
+  //    return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDiiQ7oYIODm2yzWJxKA3HUDkLfNw-lgQ8',
+  //    {
+  //     email,
+  //     password,
+  //     returnSecureToken: true
+  //    })
+  //    .pipe(catchError(this.handleError),
+  //    tap(res  =>{
+  //     this.handleAuthentication(
+  //       res.email,
+  //       res.localId,
+  //       res.idToken,
+  //       +res.expiresIn)
+  //    }))
+  // }
 
   private handleError(err: HttpErrorResponse){
     let  errorMessage = 'An unknow error occurred';
@@ -135,7 +135,7 @@ export class AuthService {
         //* changed to store functionality
         // this.user.next(loadedUser)
         this.store.dispatch(
-          new AuthAction.Login({
+          new AuthAction.AuthenticateSuccess({
           email: loadedUser.email,
           userId: loadedUser.id,
           token: loadedUser._token,
@@ -154,7 +154,7 @@ export class AuthService {
     this.store.dispatch(
       new AuthAction.Logout()
     )
-    this.router.navigate(['/auth']);
+    // this.router.navigate(['/auth']);
     localStorage.removeItem('userData') // remove particular data from localstage
     // localStorage.clear() // clear everthing from the localstorage
     if(this.tokenExperationTimer){
@@ -182,7 +182,7 @@ export class AuthService {
     //* changed to store functionality
     // this.user.next(user)
     this.store.dispatch(
-      new AuthAction.Login({
+      new AuthAction.AuthenticateSuccess({
       email: user.email,
       userId: user.id,
       token: user._token,
