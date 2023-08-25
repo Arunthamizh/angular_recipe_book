@@ -7,13 +7,13 @@ import { pipe, Subscriber } from 'rxjs';
 import { exhaustMap, map, take, tap } from 'rxjs/operators'
 import * as fromApp from '../store/app.reducer'
 import { Store } from '@ngrx/store';
-
+import * as RecipesActions from '../recipes/store/recipe.action';
 @Injectable({providedIn: 'root'}) // this is optinal type otherwise you need to include it in app modules providers array
 // above is the recomended way for
 export class DataStorageService {
   constructor(private http: HttpClient, private recipeService: RecipeService,
     private authService: AuthService,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState>,
     ) { }
 
   storeRecipes(){
@@ -25,22 +25,44 @@ export class DataStorageService {
      })
   }
 
-  fetchRecipies(){
-    return this.http.get<Recipe[]>('https://recipe-angular-udemy-course-default-rtdb.firebaseio.com/recipes.json')
-    .pipe(
-      map( recipes =>{
-       return recipes.map( recipe => {
-        return {... recipe , ingredients: recipe.ingredients ? recipe.ingredients : []}
-        ;
-      });
-    }),
-    tap( recipes =>{
-      this.recipeService.setRecipes(recipes);
-    }))
-    // .subscribe((recipes) => {
-    //    console.log('fetch data', recipes)
+  // fetchRecipies(){
+  //   return this.http.get<Recipe[]>('https://recipe-angular-udemy-course-default-rtdb.firebaseio.com/recipes.json')
+  //   .pipe(
+  //     map( recipes =>{
+  //      return recipes.map( recipe => {
+  //       return {... recipe , ingredients: recipe.ingredients ? recipe['ingredients'] : []}
+  //       ;
+  //     });
+  //   }),
+  //   tap( recipes =>{
+  //     // this.recipeService.setRecipes(recipes);
+  //     this.store.dispatch(new RecipesActions.SetRecipes(recipes))
+  //   }))
+  //   // .subscribe((recipes) => {
+  //   //    console.log('fetch data', recipes)
 
-    // })
+  //   // })
+  // }
+
+  fetchRecipies() {
+    return this.http
+      .get<Recipe[]>(
+        'https://recipe-angular-udemy-course-default-rtdb.firebaseio.com/recipes.json'
+      )
+      .pipe(
+        map(recipes => {
+          return recipes.map(recipe => {
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : []
+            };
+          });
+        }),
+        tap(recipes => {
+          // this.recipeService.setRecipes(recipes);
+          this.store.dispatch(new RecipesActions.SetRecipes(recipes));
+        })
+      );
   }
   // new fetch modified from above
   // we set the header in interseptor so we not using the below funtion it for reference
