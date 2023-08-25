@@ -1,7 +1,7 @@
 import { PlaceholderDirective } from './../shared/placeholder/placeholder.directive';
 import { AlertComponent } from './../shared/alert/alert.component';
 import { Router } from '@angular/router';
-import { AuthResponseData, AuthService } from './auth.service';
+import { AuthService } from './auth.service';
 import { NgForm } from '@angular/forms';
 import { Component, ComponentFactoryResolver, OnInit, ViewChild } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';

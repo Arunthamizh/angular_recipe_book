@@ -1,3 +1,4 @@
+import { AuthService } from './../auth.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import * as AuthActions from '../store/auth.action'
 import { HttpClient } from '@angular/common/http';
@@ -57,7 +58,8 @@ export class AuthEffects {
   constructor(
     private action$: Actions,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ){
 
   }
@@ -79,6 +81,7 @@ export class AuthEffects {
        returnSecureToken: true
       })
       .pipe(
+        tap((resData) => this.authService.setLogoutTimer((+resData.expiresIn * 1000)) ), // convert seconds into miliseconds
         map( resData => {
         return handleAuthentication(+resData.expiresIn, resData.email, resData.localId, resData.idToken)
         }),
@@ -96,7 +99,7 @@ export class AuthEffects {
   //* Below Effect() does`nt and to let NGRX effects know about that and avoid errors
   @Effect({dispatch: false})
   authRedirect = this.action$.pipe(
-    ofType(AuthActions.AUTHENTICATE_SUCCESS, AuthActions.LOGOUT),
+    ofType(AuthActions.AUTHENTICATE_SUCCESS),
     tap(() => {
     this.router.navigate(['/'])
     })
@@ -125,7 +128,9 @@ export class AuthEffects {
         if(loadedUser._token){
           //* changed to store functionality
           // this.user.next(loadedUser)
-
+          const expirationDuration = new Date (userData._tokExpirationDate).getTime() -
+                   new Date().getTime();
+          this.authService.setLogoutTimer(expirationDuration);
           return  new AuthActions.AuthenticateSuccess({
             email: loadedUser.email,
             userId: loadedUser.id,
@@ -146,7 +151,9 @@ export class AuthEffects {
   authLogout = this.action$.pipe(
     ofType(AuthActions.LOGOUT),
     tap(() => {
+      this.authService.clearLogoutTimer();
       localStorage.removeItem('userData')
+      this.router.navigate(['/auth']);
     })
   )
 
@@ -162,6 +169,7 @@ export class AuthEffects {
         returnSecureToken: true
        })
        .pipe(
+        tap((resData) => this.authService.setLogoutTimer((+resData.expiresIn)) ), // convert seconds into miliseconds
         map((resData: any)  => { return handleAuthentication(resData.expiresIn, resData.email, resData.localId, resData.idToken)}),
         catchError((errorRes) => { return handleError(errorRes)}),
         )

@@ -9,15 +9,15 @@ import * as AuthAction from '../auth/store/auth.action'
 
 import * as fromApp from './store/auth.reducer'
 import { Store } from '@ngrx/store';
-export interface AuthResponseData {
-  Kind:  string,
-  idToken: string,
-  email: string,
-  refreshToken: string,
-  expiresIn: string,
-  localId: string,
-  registered?: boolean;
-}
+// export interface AuthResponseData {
+//   Kind:  string,
+//   idToken: string,
+//   email: string,
+//   refreshToken: string,
+//   expiresIn: string,
+//   localId: string,
+//   registered?: boolean;
+// }
 
 @Injectable({
   providedIn: 'root'
@@ -94,101 +94,108 @@ export class AuthService {
   //    }))
   // }
 
-  private handleError(err: HttpErrorResponse){
-    let  errorMessage = 'An unknow error occurred';
-    if(!err.error || !err.error.error){
-      return throwError(errorMessage)
-    }
-    switch(err.error.error.message){
-      case 'EMAIL_EXISTS':
-        errorMessage = 'This email exists already.';
-        break;
-      case 'EMAIL_NOT_FOUND':
-        errorMessage = 'This email does not exist.';
-        break;
-      case 'INVALID_PASSWORD':
-        errorMessage = 'This password is not correctss.';
-        break;
-    };
-    return throwError(errorMessage)
-  }
+  // private handleError(err: HttpErrorResponse){
+  //   let  errorMessage = 'An unknow error occurred';
+  //   if(!err.error || !err.error.error){
+  //     return throwError(errorMessage)
+  //   }
+  //   switch(err.error.error.message){
+  //     case 'EMAIL_EXISTS':
+  //       errorMessage = 'This email exists already.';
+  //       break;
+  //     case 'EMAIL_NOT_FOUND':
+  //       errorMessage = 'This email does not exist.';
+  //       break;
+  //     case 'INVALID_PASSWORD':
+  //       errorMessage = 'This password is not correctss.';
+  //       break;
+  //   };
+  //   return throwError(errorMessage)
+  // }
 
 
-  autoLogin(){
-    const userData :{
-      email: string,
-      id: string,
-      _token: string,
-      _tokExpirationDate: string
+  // autoLogin(){
+  //   const userData :{
+  //     email: string,
+  //     id: string,
+  //     _token: string,
+  //     _tokExpirationDate: string
 
-    } = JSON.parse(localStorage.getItem('userData'));
-    if(!userData){
-      return;
-    }
-    const loadedUser = new User(
-      userData.email,
-      userData.id,
-      userData._token,
-      new Date (userData._tokExpirationDate)
-      );
-      if(loadedUser._token){
-        //* changed to store functionality
-        // this.user.next(loadedUser)
-        this.store.dispatch(
-          new AuthAction.AuthenticateSuccess({
-          email: loadedUser.email,
-          userId: loadedUser.id,
-          token: loadedUser._token,
-          expirationDate: new Date (userData._tokExpirationDate)
-        }))
-        const expirationDuration =
-          new Date (userData._tokExpirationDate).getTime() -
-          new Date().getTime();
-        this.autoLogout(expirationDuration)
-      }
-  }
+  //   } = JSON.parse(localStorage.getItem('userData'));
+  //   if(!userData){
+  //     return;
+  //   }
+  //   const loadedUser = new User(
+  //     userData.email,
+  //     userData.id,
+  //     userData._token,
+  //     new Date (userData._tokExpirationDate)
+  //     );
+  //     if(loadedUser._token){
+  //       //* changed to store functionality
+  //       // this.user.next(loadedUser)
+  //       this.store.dispatch(
+  //         new AuthAction.AuthenticateSuccess({
+  //         email: loadedUser.email,
+  //         userId: loadedUser.id,
+  //         token: loadedUser._token,
+  //         expirationDate: new Date (userData._tokExpirationDate)
+  //       }))
+  //       const expirationDuration =
+  //         new Date (userData._tokExpirationDate).getTime() -
+  //         new Date().getTime();
+  //       this.autoLogout(expirationDuration)
+  //     }
+  // }
 
-  logout() {
-    // this.user.next(null);
-    //* changed to store functionality
-    this.store.dispatch(
-      new AuthAction.Logout()
-    )
-    // this.router.navigate(['/auth']);
-    localStorage.removeItem('userData') // remove particular data from localstage
-    // localStorage.clear() // clear everthing from the localstorage
-    if(this.tokenExperationTimer){
-      clearTimeout(this.tokenExperationTimer);
-    }
-    this.tokenExperationTimer = null;
-  }
+  // logout() {
+  //   // this.user.next(null);
+  //   //* changed to store functionality
+  //   this.store.dispatch(
+  //     new AuthAction.Logout()
+  //   )
+  //   // this.router.navigate(['/auth']);
+  //   localStorage.removeItem('userData') // remove particular data from localstage
+  //   // localStorage.clear() // clear everthing from the localstorage
+  //   if(this.tokenExperationTimer){
+  //     clearTimeout(this.tokenExperationTimer);
+  //   }
+  //   this.tokenExperationTimer = null;
+  // }
 
-  autoLogout(exirationDuration){
+  setLogoutTimer(exirationDuration){
     console.log('exirationDuration',exirationDuration)
     this.tokenExperationTimer = setTimeout(() => {
-      this.logout();
+     this.store.dispatch(new AuthAction.Logout())
     },exirationDuration)
   }
 
-  private handleAuthentication(email: string, userId: string,
-    token: string, expiresIn: number){
-    const expitationDate = new Date(new Date().getTime() + expiresIn * 1000);
-    const user = new User(
-      email,
-      userId,
-      token,
-      expitationDate
-      );
-    //* changed to store functionality
-    // this.user.next(user)
-    this.store.dispatch(
-      new AuthAction.AuthenticateSuccess({
-      email: user.email,
-      userId: user.id,
-      token: user._token,
-      expirationDate: expitationDate
-    }))
-    this.autoLogout(expiresIn * 1000)
-    localStorage.setItem('userData',JSON.stringify(user));
+  clearLogoutTimer(){
+    if(this.tokenExperationTimer){
+      clearTimeout(this.tokenExperationTimer)
+      this.tokenExperationTimer = null;
+    }
   }
+
+  // private handleAuthentication(email: string, userId: string,
+  //   token: string, expiresIn: number){
+  //   const expitationDate = new Date(new Date().getTime() + expiresIn * 1000);
+  //   const user = new User(
+  //     email,
+  //     userId,
+  //     token,
+  //     expitationDate
+  //     );
+  //   //* changed to store functionality
+  //   // this.user.next(user)
+  //   this.store.dispatch(
+  //     new AuthAction.AuthenticateSuccess({
+  //     email: user.email,
+  //     userId: user.id,
+  //     token: user._token,
+  //     expirationDate: expitationDate
+  //   }))
+  //   this.autoLogout(expiresIn * 1000)
+  //   localStorage.setItem('userData',JSON.stringify(user));
+  // }
 }

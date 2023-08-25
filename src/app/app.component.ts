@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
   }
   ngOnInit(): void {
     // throw new Error('Method not implemented.');
-    this.authService.autoLogin();
+    // this.authService.autoLogin();
     this.store.dispatch( new AuthActions.AuthoLogin())
     this.loggingService.printLog('Hello from appComponent ngOnInit()')
   }

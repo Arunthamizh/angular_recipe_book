@@ -10,11 +10,13 @@ import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core.module';
 import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
 import { LoggingService } from './logging.service';
-import { authReducer } from './auth/store/auth.reducer';
+import { authReducer, state } from './auth/store/auth.reducer';
 import * as fromAuth from '../app/store/app.reducer'
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './auth/store/auth.effects';
-
+import { StoreDevtoolsModule } from '@ngrx/store-devtools'
+import { environment } from '../environments/environment';
+import { StoreRouterConnectingModule } from '@ngrx/router-store'
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,6 +46,8 @@ import { AuthEffects } from './auth/store/auth.effects';
      StoreModule.forRoot( fromAuth.appReducer ),
     //  * need to register the effects below the storeModule
     EffectsModule.forRoot([AuthEffects]),
+    StoreDevtoolsModule.instrument({logOnly:environment.production}),
+    StoreRouterConnectingModule.forRoot(),
     CoreModule // * provided and service are moved to core module
   ],
   // // provide maintain one service instance for all the time still app running
