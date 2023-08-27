@@ -60,6 +60,7 @@ export class DataStorageService {
         }),
         tap(recipes => {
           // this.recipeService.setRecipes(recipes);
+          //  * when we dispatch an action we dont get back as an observable.
           this.store.dispatch(new RecipesActions.SetRecipes(recipes));
         })
       );

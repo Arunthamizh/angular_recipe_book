@@ -9,7 +9,7 @@ import { LoggingService } from './logging.service';
   // * and no need to export it because they are provided into the root
 @NgModule({
   // provide maintain one service instance for all the time still app running
-  providers: [ RecipeService, AuthService,{
+  providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptorService,
     multi: true // By enable as true we allow to use multiple interceptor even we use one for now

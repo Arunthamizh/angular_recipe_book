@@ -16,7 +16,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './auth/store/auth.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools'
 import { environment } from '../environments/environment';
-import { StoreRouterConnectingModule } from '@ngrx/router-store'
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { RecipesEffects } from './recipes/store/recipe.effects'
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,7 +46,7 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store'
     //  below is the alternative and efficient way for above code
      StoreModule.forRoot( fromAuth.appReducer ),
     //  * need to register the effects below the storeModule
-    EffectsModule.forRoot([AuthEffects]),
+    EffectsModule.forRoot([AuthEffects, RecipesEffects]),
     StoreDevtoolsModule.instrument({logOnly:environment.production}),
     StoreRouterConnectingModule.forRoot(),
     CoreModule // * provided and service are moved to core module
