@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { AuthService } from './auth/auth.service';
-import { RecipeService } from './recipes/recipe.service';
+// import { RecipeService } from './recipes/recipe.service';
 import { LoggingService } from './logging.service';
 // * core module is used to split the servie form the app module
   // * and no need to export it because they are provided into the root

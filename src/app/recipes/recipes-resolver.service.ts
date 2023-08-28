@@ -1,5 +1,4 @@
 import { of, pipe } from 'rxjs';
-import { ofType } from '@ngrx/effects';
 import { RecipeService } from './recipe.service';
 import { DataStorageService } from './../shared/data-storage-service';
 import { Injectable } from '@angular/core';
@@ -9,6 +8,7 @@ import * as fromApp from '../store/app.reducer';
 import * as RecipeActions from './store/recipe.action';
 import { Actions, ofType } from '@ngrx/effects'
 import { map, switchMap, take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 // it is used to fix the problem when page gets refresh
 // we losed the recipe data so we check recipe data is available else fetch it
 @Injectable({ providedIn: 'root'})
@@ -35,8 +35,9 @@ export class RecipesResolverService implements Resolve <Recipe[]>{
 
           this.store.dispatch( new RecipeActions.FetchRecipes())
           // below action.pipe and ofType() is now listen to the sepecfic action
-            return this.actions.pipe(
-              ofType(RecipeActions.SET_RECIPES, take(1))
+            return this.actions$.pipe(
+              take(1),
+              ofType(RecipeActions.SET_RECIPES)
             )
 
         } else{

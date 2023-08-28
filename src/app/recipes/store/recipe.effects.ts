@@ -8,6 +8,7 @@ import * as RecipesAction from '../store/recipe.action'
 import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { Recipe } from '../recipe.model';
 import * as fromApp from '../../store/app.reducer'
+import { Store } from '@ngrx/store';
 
 
 @Injectable()
@@ -41,9 +42,9 @@ export  class RecipesEffects {
     map((recipes: any) => {
       return new RecipesAction.SetRecipes(recipes)
     })
-  )
+  );
 
-  @Effect({dispath: false})
+  @Effect({dispatch: false})
   storeRecipes = this.Action$.pipe(
     ofType(RecipesAction.STORE_RECIPES),
     //  it allow to merge the value from other observable into this observable stream

@@ -18,6 +18,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools'
 import { environment } from '../environments/environment';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { RecipesEffects } from './recipes/store/recipe.effects'
+import { RecipeService } from './recipes/recipe.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -60,6 +61,7 @@ import { RecipesEffects } from './recipes/store/recipe.effects'
   // }],
   // entryComponents:[AlertComponent], //  ! below angular 9 we need entry componts above to it we can omit it
   // providers:[LoggingService],
+  providers: [RecipeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
